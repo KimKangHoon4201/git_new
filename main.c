@@ -5,17 +5,28 @@
 // 애플리케이션용 함수 원형
 void create_record();
 void read_record();
+void update_record();
 void delete();
 void read_file();
 void file_r_Report();
 void save_Wicked();
+int login();
+void create_user();
+void Optimize_record();
+void Sort_Record();
 
 int main(){
+	c_init_id();
+	c_user_file_r();
+	int i;
+	if(c_first_id_available()>0){
+		i=login();
+			if(i==0) return 0;
+	}
 	c_init();
-
 	int menu;
 	while(1){
-		printf("\nMenu : 1.Create 2.Read 4.Delete 5.Read file 6.Read Report 7.Save_Wicked 0.Quit > ");
+		printf("\nMenu : 1.Create 2.Read 3.Update 4.Delete 5.Read_file 6.Read_Report 7.Save_Wicked 8.Optimize_record 9.Sort_Record 10.Create_user 0.Quit > ");
 		scanf("%d", &menu);
 		printf("\n");
 		switch(menu){
@@ -24,6 +35,9 @@ int main(){
 				break;
 			case 2:
 				read_record();
+				break;
+			case 3:
+				update_record();
 				break;
 			case 4:
 				delete();
@@ -37,10 +51,39 @@ int main(){
 			case 7:
 				save_Wicked();
 				break;
+			case 8:
+				Optimize_record();
+				break;
+			case 9:
+				Sort_Record();
+				break;
+			case 10:
+				create_user();
+				break;
 			case 0:
 			default:
 				return 0;
 		}
+	}
+}
+
+int login(){
+	char id[20], pw[20];
+	printf("Enter ID: ");
+	scanf("%s", id);
+	Login* p = c_search_by_id(id);
+	if(p){
+		printf("Enter Password: ");
+		scanf("%s", pw);
+		if(strcmp(p->password,pw)==0)
+			return 1;
+		else{
+			printf("incorrection of password\n");
+			return 0;
+		}
+	}else{
+	 printf("No such ID\n");
+	 return 0;
 	}
 }
 
@@ -153,6 +196,32 @@ void read_record(){
 		}
 	}
 
+void update_record(){
+	char name[20], city[20], c1[20], c2[20], c3[20], c4[20], c5[20];
+	printf("Enter a name > ");
+	scanf("%s", name);
+	int yesno;
+
+	Criminal_Info* p = c_search_by_name(name);
+	if(p) {
+		printf("Enter a update info.\n");
+		printf("city > ");
+		scanf("%s", city);
+		c_update(p, city);
+		printf("Are you going to update the crime classification?\n");
+		printf("yes:1 no:2 > ");
+		scanf("%d", &yesno);
+		if(yesno==1){
+			if(p->record>=5)
+				printf("There is no space");
+			else
+				c_update_category(p);
+		}else return;
+	}else{
+		printf("No such criminal!\n");
+	}
+}
+
 void delete(){
 	char  name[20];
 	printf("Enter a name: ");
@@ -201,5 +270,47 @@ void delete(){
 			fprintf(fp, "%s\n", c_file_s(records[i]));
 		}
 		fclose(fp);
+	}
+
+	void create_user(){
+		char id[20], pw[20];
+		if(c_id_available()){
+		printf("Enter a new user's info.\n");
+		printf("ID > ");
+		scanf("%s", id);
+		if(c_search_by_name(id)) {
+			printf("Duplicated ID!\n");
+			return;
+		}
+		printf("Password > ");
+		scanf("%s", pw);
+		c_create_user(id, pw);
+  	c_save_user(id, pw);
+		}else{
+		printf("There is no space!\n");
+		return;
+		}
+	}
+
+	void Optimize_record(){
+		int last =get_last();
+		printf("[Before]first_available:%d, count:%d\n", c_first_available(), c_count());
+		if(last>c_first_available()){
+		c_optimize_record(last);
+		c_free_record(last);
+		}
+		printf("[After]first_available:%d, count:%d\n", c_first_available(), c_count());
+	}
+
+	void Sort_Record(){
+		printf("Records were sorted\n");
+		Criminal_Info* records[MAX_CRIMINALS];
+		int size = c_count();
+		c_sort_record();
+		c_get_all(records);
+		for(int i=0; i<size; i++){
+			Criminal_Info* p = records[i];
+			printf("%d. %s\n", i+1, c_to_string(p));
+		}
 	}
 

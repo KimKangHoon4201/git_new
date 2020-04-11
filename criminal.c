@@ -1,13 +1,18 @@
 #include "criminal.h"
 
 Criminal_Info* criminals [MAX_CRIMINALS];
+Login* user[MAX_USER];
 int _count = 0;
-
+int _user =0;
 
 
 
 int c_count(){
 	return _count;
+}
+
+int c_user_count(){
+	return _user;
 }
 
 int c_is_available(){
@@ -181,7 +186,7 @@ void search_category(char* n){
 		}
 	}
 	#ifdef DEBUG
-	printf("[DEBUG]search until %d\n",j);
+	printf("[DEBUG]search until %d",j);
 	#endif
 	return c;
 }
@@ -210,6 +215,16 @@ void search_age(int n){
 		for(int i=0; i<MAX_CRIMINALS; i++){
 			if(criminals[i]!=NULL){
 				a[c]=criminals[i];
+				c++;
+			}
+		}
+	}
+
+	void c_get_user_all(Login* a[]){
+		int c=0;
+		for(int i=0; i<MAX_USER; i++){
+			if(user[i]!=NULL){
+				a[c]=user[i];
 				c++;
 			}
 		}
@@ -303,6 +318,15 @@ void search_age(int n){
 		}_count =0;
 	} //모든 레코드 제거
 
+	void c_init_id(){
+
+			for(int i=0; i<MAX_USER; i++){
+				if(user[i]!=NULL){
+					free(user[i]);
+				}
+				user[i] = NULL;
+			}_user =0;
+	}
 	void c_delete(Criminal_Info* p){
 		int i, index;
 		for(i=0; i<MAX_CRIMINALS; i++)
@@ -310,7 +334,7 @@ void search_age(int n){
 				index=i;
 				break;
 				#ifdef DEBUG
-				printf("[DEBUG]%s is delete", criminals[i]->name);
+				printf("[DEBUG]%s is 8", criminals[i]->name);
 				#endif
 			}
 		free(p);
@@ -324,7 +348,7 @@ void search_age(int n){
 	if( fp != NULL )
 	{
 		#ifdef DEBUG
-		printf("[DEBUG]The List file is not empty\n");
+		printf("[DEBUG]The List file is not empty");
 		#endif
 		char strTemp[255];
 		char *pStr;
@@ -339,7 +363,7 @@ void search_age(int n){
 	else
 	{
 		#ifdef DEBUG
-		printf("[DEBUG]The List file is empty\n");
+		printf("[DEBUG]The List file is empty");
 		#endif
 	}
 		}
@@ -385,5 +409,169 @@ void search_age(int n){
 		}
 
 		return c;
+	}
+
+	void c_update(Criminal_Info* p, char* city){
+		strcpy(p->city, city);
+	}
+	void c_update_category(Criminal_Info* p){
+		char c1[20], c2[20], c3[20], c4[20], c5[20];
+		printf("Update category!!!\n");
+		printf("If you want to stop \"x+[Enter]\"\n");
+		printf("category1: ");
+		scanf("%s", c1);
+		if(strcmp(c1,"x")==0){
+			p->record=0;
+			return;
+		}else{
+			strcpy(p->crim.crim1,c1);
+			p->record=1;
+		}
+		printf("category2: ");
+		scanf("%s", c2);
+		if(strcmp(c2,"x")==0)	return;
+		else{
+			strcpy(p->crim.crim2,c2);
+			p->record++;
+		}
+		printf("category3: ");
+		scanf("%s", c3);
+		if(strcmp(c3,"x")==0)	return;
+		else{
+			strcpy(p->crim.crim3,c3);
+			p->record++;
+		}
+		printf("category4: ");
+		scanf("%s", c4);
+		if(strcmp(c4,"x")==0)	return;
+		else{
+			strcpy(p->crim.crim4,c4);
+			p->record++;
+		}
+		printf("category5: ");
+		scanf("%s", c5);
+		if(strcmp(c5,"x")==0)	return;
+		else{
+			strcpy(p->crim.crim5,c5);
+			p->record++;
+		}
+	}
+
+	Login* c_search_by_id(char* n){
+		for(int i=0; i<_user; i++){
+			if(user[i]!=NULL && strcmp(user[i]->id, n)==0) return user[i];
+		}
+		return NULL;
+	}
+
+ 	int	c_id_available(){
+		for(int i=0; i<MAX_USER; i++){
+			if(user[i]==NULL) return 1;
+		}
+		return 0;
+	}
+
+	void c_create_user(char* id, char* pw){
+		int index = c_first_id_available();
+		user [index] = (Login*)malloc(sizeof(Login));
+		Login* p = user[index];
+		strcpy(p->id, id);
+		strcpy(p->password, pw);
+		_user++;
+		c_save_user(id, pw);
+	}
+
+	int c_first_id_available(){
+		for(int i=0; i<MAX_USER; i++){
+			if(user[i]==NULL) return i;
+		}
+		return -1;
+	}
+
+	void c_save_user(){
+		FILE* f = fopen("User_List.txt", "w");
+		int size = c_user_count();
+		Login* records[size];
+		c_get_user_all(records);
+		for(int i=0; i<size; i++){
+			Login* p = records[i];
+			fprintf(f, "%s\n", c_file_user_s(p));
+		}
+		fclose(f);
+	}
+	char* c_file_user_s(Login* p){
+		static char str[80];
+		sprintf(str, "%s %s ", p->id, p->password);
+		return str;
+	}
+
+	void c_user_file_r(){
+		FILE *fp = fopen("User_List.txt", "r");
+		char ID[20], PW[20];
+		while(!feof(fp)){
+			if(!c_id_available()){
+			printf("[Load] There is no space!\n");
+			break;
+			}
+		int n= fscanf(fp, "%s %s", ID, PW);
+		if(n<2) break;
+
+		if(c_search_by_name(ID)) {
+			printf("[Load] Duplicated ID(%s)! loding.\n", ID);
+			continue;
+		}
+		c_create_user(ID, PW);
+	}
+	#ifdef DEBUG
+	int i=0;
+	for(;;){
+	if(user[i]==NULL) break;
+	printf("%s", user[i]->id);
+	}
+	#endif
+	fclose(fp);
+	}
+
+	int get_last(){
+		int last=MAX_CRIMINALS-1;//마지막 레코드 인덱스
+		while(criminals[last]==NULL){
+			last--;
+		}
+		return last;
+	}
+
+	void c_optimize_record(int last){
+		int index = c_first_available();
+
+		for(int i= index; i<last; i++){
+			criminals[i]=criminals[i+1];
+		}
+	}
+
+	void c_free_record(int index){
+		free(criminals[index]);
+		criminals[index]=NULL;
+	}
+
+	void c_sort_record(){
+		int n = c_count();
+			for (int i = 0; i < n - 1; i++) {
+				for (int j = 0; j < n - i - 1; j++){ // last i elements are already in place
+# ifdef DEBUG
+printf("sorting\n");
+# endif
+		if (strcmp(criminals[j]->name, criminals[j+1]->name)>0){
+						#ifdef DEBUG
+						printf("swap\n");
+						#endif
+						Criminal_Info* tmp;
+						tmp = criminals[j+1];
+						criminals[j+1]=criminals[j];
+						criminals[j]=tmp;
+					}
+				}
+
+			}
+
 	}
 

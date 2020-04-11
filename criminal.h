@@ -3,8 +3,14 @@
 #include <string.h>
 
 #define MAX_CRIMINALS 5
+#define MAX_USER 5
 
 // 범죄자 레코드의 데이터 타입 정의
+typedef struct login{
+	char id[20];
+	char password[20];
+}Login;
+
 typedef struct category{ // 범죄항목
 	char crim1[20];
 	char crim2[20];
@@ -12,6 +18,7 @@ typedef struct category{ // 범죄항목
 	char crim4[20];
 	char crim5[20];
 }Crim;
+
 typedef struct criminal{
 	char name[20]; //범죄자 이름
 	int age;
@@ -56,4 +63,19 @@ void search_age(int n);
 	void file_r_List();//파일 새로 읽어서 출력
 	void file_r_Wicked();
 	int search_wicked(Criminal_Info* a[]);
-
+	void c_update(Criminal_Info* p, char* city);
+	void c_update_category(Criminal_Info* p);
+	Login* c_search_by_id(char* n);
+	int	c_id_available();
+	void c_create_user(char* id, char* pw);
+	int c_first_id_available();
+	int c_count();
+	void c_get_user_all(Login* a[]);
+	void c_save_user();
+	char* c_file_user_s(Login* p);
+	void c_user_file_r();
+	void c_init_id();
+	void c_optimize_record();
+	int get_last();
+	void c_free_record(int index);
+	void c_sort_record();
