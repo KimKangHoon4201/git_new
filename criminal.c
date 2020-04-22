@@ -370,7 +370,7 @@ void search_age(int n){
 
 	void file_r_Wicked(){
 		FILE *fp =  NULL;
-		fp=fopen("Criminal_Wicked", "r");
+		fp=fopen("Criminal_Wicked.txt", "r");
 	if( fp != NULL )
 	{
 		#ifdef DEBUG
