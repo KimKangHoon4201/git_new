@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+20,30's: 13 30,40's: 22 older: 17 men: 26 women: 26
+=======
+20,30's: 2 30,40's: 0 older: 1 men: 3 women: 0
+>>>>>>> 735fe0e9fdba33873fc395286e7d2443b2edcc98

@@ -1,0 +1,31 @@
+Menu : 1.Create 2.Read 3.Update 4.Delete 5.Read_file 6.Read_Report 7.Save_Wicked 8.Optimize_record 9.Sort_Record 10.Create_user 0.Quit > 1
+
+Enter a new criminal's info.
+Name > 강훈
+age(20~100) > 21
+sex(men, women) > men
+city > 대구
+category >  절도
+
+Menu : 1.Create 2.Read 3.Update 4.Delete 5.Read_file 6.Read_Report 7.Save_Wicked 8.Optimize_record 9.Sort_Record 10.Create_user 0.Quit > 3
+
+Enter a name > 강훈
+Enter a update info.
+city > 부산
+Are you going to update the crime classification?
+yes:1 no:2 > 2
+
+Menu : 1.Create 2.Read 3.Update 4.Delete 5.Read_file 6.Read_Report 7.Save_Wicked 8.Optimize_record 9.Sort_Record 10.Create_user 0.Quit > 2
+
+
+Menu : 1.all 2.name 3.age 4.sex 5.city 6.category 7.save file 0.Quit > 2
+
+Enter a name > 강훈
+Criminal info.
+Name : 강훈
+Age : 21
+Sex : men
+City : 부산
+Category : ?절도 x x x x
+
+Menu : 1.Create 2.Read 3.Update 4.Delete 5.Read_file 6.Read_Report 7.Save_Wicked 8.Optimize_record 9.Sort_Record 10.Create_user 0.Quit > 
